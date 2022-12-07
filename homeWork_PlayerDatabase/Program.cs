@@ -12,8 +12,7 @@ namespace homeWork_PlayerDatabase
         static void Main(string[] args)
         {
             Database database = new Database();
-            database.Work();     
-            
+            database.Work();         
         }
     }
 
@@ -92,7 +91,7 @@ namespace homeWork_PlayerDatabase
                 switch (userInput) 
                 {
                     case CommandShowInfo:
-                        ShowInfoAllPlayer();
+                        ShowInfoAllPlayers();
                         break;
 
                     case CommandAdd:
@@ -104,7 +103,7 @@ namespace homeWork_PlayerDatabase
                         break;
 
                     case CommandUnban:                      
-                        UnbannedPalyer();
+                        UnbanPalyer();
                         break;
 
                     case CommandDelete:
@@ -124,7 +123,7 @@ namespace homeWork_PlayerDatabase
             }
         }
 
-        private void ShowInfoAllPlayer() 
+        private void ShowInfoAllPlayers() 
         {
             foreach(var player in _players)
             {
@@ -136,7 +135,7 @@ namespace homeWork_PlayerDatabase
         private void BanPlayer() 
         {
             Console.Write("Введите id игрока которого хотите забанить: ");
-            int id = Convert.ToInt32(Console.ReadLine());
+            int id = ReadNumber();
 
             if (TryGetPlayer(id, out Player player))
             {
@@ -148,10 +147,10 @@ namespace homeWork_PlayerDatabase
             }
         }
 
-        private void UnbannedPalyer() 
+        private void UnbanPalyer() 
         {
             Console.Write("Введите id игрока которого хотите разбанить: ");
-            int id = Convert.ToInt32(Console.ReadLine());
+            int id = ReadNumber();
 
 
             if (TryGetPlayer(id, out Player player))
@@ -167,7 +166,7 @@ namespace homeWork_PlayerDatabase
         private void DeletPlayer() 
         {
             Console.Write("Введите id игрока которого хотите удалить: ");
-            int id = Convert.ToInt32(Console.ReadLine());
+            int id = ReadNumber();
 
 
             if (TryGetPlayer(id, out Player player))
@@ -183,19 +182,22 @@ namespace homeWork_PlayerDatabase
         private void AddPlayer() 
         {
             Console.Write("Введите id игрока - ");
-            int id = Convert.ToInt32(Console.ReadLine());
+            int id = ReadNumber();
 
-            while (TryGetPlayer(id, out Player player) == false) 
+            while (TryGetPlayer(id, out Player player) == true) 
             {
                 Console.Write("\nИгрок с данным id уже существует");
+                Console.WriteLine("\nВведите повторно id игрока - ");
+                id = ReadNumber();
             }
 
             Console.Write("\nВведите имя игрока - ");
             string name = Console.ReadLine();
-            Console.Write("\nВведите уровень игрока");
-            int level = Convert.ToInt32(Console.ReadLine());
+            Console.Write("\nВведите уровень игрока - ");
+            int level = ReadNumber();
 
-            Player player1 = new Player(id, name, level);
+            Player newPlayer = new Player(id, name, level);
+            _players.Add(newPlayer);
         }
 
         private bool TryGetPlayer(int id, out Player player)
@@ -211,6 +213,21 @@ namespace homeWork_PlayerDatabase
 
             player = null;
             return false;
+        }
+
+        static int ReadNumber()
+        {
+            int result;
+            string numberForConvert = Console.ReadLine();
+
+
+            while (int.TryParse(numberForConvert, out result) == false)
+            {
+                Console.WriteLine("Ошибка. Ведите число повтороно - ");
+                numberForConvert = Console.ReadLine();
+            }
+
+            return result;
         }
     }
 }
